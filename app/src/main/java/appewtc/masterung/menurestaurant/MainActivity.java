@@ -19,7 +19,15 @@ public class MainActivity extends ActionBarActivity {
         //Create or Connect SQLite
         createOrConncet();
 
+        //Tester Add Value
+        //testerAddValue();
+
     }   // onCreate
+
+    private void testerAddValue() {
+        objUserTABLE.addValueToUser("User", "Password", "Officer", "Address", "Tel");
+        objFoodTABLE.addValueToFood("Food", "Price");
+    }   // testerAddValue
 
     private void createOrConncet() {
         objUserTABLE = new UserTABLE(this);
