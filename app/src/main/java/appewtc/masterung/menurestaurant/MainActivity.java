@@ -1,5 +1,8 @@
 package appewtc.masterung.menurestaurant;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.StrictMode;
@@ -75,7 +78,64 @@ public class MainActivity extends ActionBarActivity {
 
     private void checkUser() {
 
+        try {
+
+            String strMyResult[] = objUserTABLE.searchUser(strUserChoose);
+            strPasswordTrue = strMyResult[2];
+            strOfficer = strMyResult[3];
+
+            Log.d("Restaurant", "Welcom ==> " + strOfficer);
+
+            //Check Password
+            checkPassword();
+
+        } catch (Exception e) {
+            MyAlertDialog objMyAlert = new MyAlertDialog();
+            objMyAlert.alertDialog(MainActivity.this, "No this User", "No " + strUserChoose + " in my Database");
+        }
+
     }   // checkUser
+
+    private void checkPassword() {
+
+        if (strPassowordChoose.equals(strPasswordTrue)) {
+
+            welcomeOfficer();
+
+        } else {
+            MyAlertDialog objMyAlert = new MyAlertDialog();
+            objMyAlert.alertDialog(MainActivity.this, "Password False", "Please try again Password False");
+        }
+
+    }   // checkPassword
+
+    private void welcomeOfficer() {
+
+        AlertDialog.Builder objAlert = new AlertDialog.Builder(this);
+        objAlert.setIcon(R.drawable.restaurant);
+        objAlert.setTitle("Welcome Officer");
+        objAlert.setMessage("Welcome " + strOfficer + "\n" + "To my Restaurant");
+        objAlert.setCancelable(false);
+        objAlert.setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                edtUser.setText("");
+                edtPassword.setText("");
+                dialog.dismiss();
+            }
+        });
+        objAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent objIntent = new Intent(MainActivity.this, OrderActivity.class);
+                objIntent.putExtra("Officer", strOfficer);
+                startActivity(objIntent);
+                dialog.dismiss();
+            }
+        });
+        objAlert.show();
+
+    }   // welcomeOfficer
 
     private void deleteAllData() {
         SQLiteDatabase objSQLite = openOrCreateDatabase("restaurant.db", MODE_PRIVATE, null);
