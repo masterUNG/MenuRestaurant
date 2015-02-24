@@ -7,7 +7,8 @@
         android:layout_width="@dimen/image"
         android:layout_height="@dimen/image"
         android:id="@+id/imvMenu"
-        android:padding="5dp" />
+        android:padding="10dp"
+        android:layout_marginRight="20dp" />
 
     <LinearLayout
         android:orientation="vertical"

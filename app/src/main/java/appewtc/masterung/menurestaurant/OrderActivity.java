@@ -1,5 +1,7 @@
 package appewtc.masterung.menurestaurant;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
@@ -7,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,6 +34,8 @@ public class OrderActivity extends ActionBarActivity {
     private TextView txtShowOffecer;
     private EditText edtTable;
     private ListView myListview;
+    private String strMyOfficer, strNumberTable, strFood, strAmount;
+    private String[] strMenu, strPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +50,92 @@ public class OrderActivity extends ActionBarActivity {
 
         createListView();
 
+        showOfficer();
+
+        activeClickOnListView();
+
     }   // onCreate
+
+    private void activeClickOnListView() {
+
+        myListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                strNumberTable = edtTable.getText().toString().trim();
+                if (strNumberTable.equals("")) {
+                    MyAlertDialog objMyAlertDialog = new MyAlertDialog();
+                    objMyAlertDialog.alertDialog(OrderActivity.this, "What Number Table ?", "Please Fill Number Table");
+                } else {
+                    alertAmountOrder();
+                    strFood = strMenu[position];
+               }   // if
+
+
+
+            }   // event
+        });
+
+    }   // activeClickOnListView
+
+    private void alertAmountOrder() {
+
+        CharSequence[] charAmount = {"1", "2", "3", "4", "5"};
+
+        AlertDialog.Builder objBuilder = new AlertDialog.Builder(this);
+        objBuilder.setIcon(R.drawable.restaurant);
+        objBuilder.setTitle("Amount of Order");
+        objBuilder.setSingleChoiceItems(charAmount, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                switch (which) {
+                    case 0:
+                        strAmount = "1";
+                        break;
+                    case 1:
+                        strAmount = "2";
+                        break;
+                    case 2:
+                        strAmount = "1";
+                        break;
+                    case 3:
+                        strAmount = "4";
+                        break;
+                    case 4:
+                        strAmount = "5";
+                        break;
+                }   // switch
+
+                showLog();
+                dialog.dismiss();
+            }   //event
+        });
+        objBuilder.show();
+
+    }   // alertAmountOrder
+
+    private void showLog() {
+
+        Log.d("Restaurant", "Officer = " + strMyOfficer);
+        Log.d("Restaurant", "Table = " + strNumberTable);
+        Log.d("Restaurant", "Food = " + strFood);
+        Log.d("Restaurant", "Amount = " + strAmount);
+
+    }   // shwoLog
+
+    private void getEditTable() {
+
+
+
+    }   // getEditTable
+
+    private void showOfficer() {
+
+        strMyOfficer = getIntent().getExtras().getString("Officer");
+        txtShowOffecer.setText(strMyOfficer);
+
+    }   // showOfficer
 
     private void bindWidtet() {
         txtShowOffecer = (TextView) findViewById(R.id.txtShowOffecer);
@@ -54,8 +145,8 @@ public class OrderActivity extends ActionBarActivity {
 
     private void createListView() {
 
-        String[] strMenu = objFoodTABLE.listMenu();
-        String[] strPrice = objFoodTABLE.listPrice();
+        strMenu = objFoodTABLE.listMenu();
+        strPrice = objFoodTABLE.listPrice();
 
         int[] intImageMenu = {R.drawable.food1, R.drawable.food2, R.drawable.food3, R.drawable.food4, R.drawable.food5,
                 R.drawable.food6, R.drawable.food7, R.drawable.food8, R.drawable.food9, R.drawable.food10,
