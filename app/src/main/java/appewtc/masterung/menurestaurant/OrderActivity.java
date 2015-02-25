@@ -2,6 +2,7 @@ package appewtc.masterung.menurestaurant;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
@@ -36,11 +37,16 @@ public class OrderActivity extends ActionBarActivity {
     private ListView myListview;
     private String strMyOfficer, strNumberTable, strFood, strAmount;
     private String[] strMenu, strPrice;
+    private OrderTABLE objOrderTABLE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
+
+        objOrderTABLE = new OrderTABLE(this);
+
+
 
         bindWidtet();
 
@@ -55,6 +61,14 @@ public class OrderActivity extends ActionBarActivity {
         activeClickOnListView();
 
     }   // onCreate
+
+    private void checkZero() {
+        strNumberTable = edtTable.getText().toString().trim();
+        if (strNumberTable.equals("")) {
+            MyAlertDialog objMyAlertDialog = new MyAlertDialog();
+            objMyAlertDialog.alertDialog(OrderActivity.this, "What Number Table ?", "Please Fill Number Table");
+        }
+    }
 
     private void activeClickOnListView() {
 
@@ -108,12 +122,22 @@ public class OrderActivity extends ActionBarActivity {
                 }   // switch
 
                 showLog();
+
+                //Update Value to SQLite
+                updateOrderToOrderTABLE();
+
                 dialog.dismiss();
             }   //event
         });
         objBuilder.show();
 
     }   // alertAmountOrder
+
+    private void updateOrderToOrderTABLE() {
+
+        long addValue = objOrderTABLE.addValueOrder(strMyOfficer, strNumberTable, strFood, strAmount);
+
+    }   // update
 
     private void showLog() {
 
@@ -124,11 +148,6 @@ public class OrderActivity extends ActionBarActivity {
 
     }   // shwoLog
 
-    private void getEditTable() {
-
-
-
-    }   // getEditTable
 
     private void showOfficer() {
 
@@ -242,14 +261,15 @@ public class OrderActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.itemConfirm:
+                Intent objIntent = new Intent(OrderActivity.this, ConfirmOrderListView.class);
+                objIntent.putExtra("Officer", strMyOfficer);
+                objIntent.putExtra("Desk", strNumberTable);
+                startActivity(objIntent);
+                finish();
+                break;
         }
 
         return super.onOptionsItemSelected(item);

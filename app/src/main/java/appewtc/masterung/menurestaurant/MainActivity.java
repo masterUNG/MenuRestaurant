@@ -33,6 +33,7 @@ public class MainActivity extends ActionBarActivity {
     private FoodTABLE objFoodTABLE;
     private EditText edtUser, edtPassword;
     private String strUserChoose, strPassowordChoose, strPasswordTrue, strOfficer;
+    private OrderTABLE objOrderTABLE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,11 +215,13 @@ public class MainActivity extends ActionBarActivity {
     private void testerAddValue() {
         objUserTABLE.addValueToUser("User", "Password", "Officer", "Address", "Tel");
         objFoodTABLE.addValueToFood("Food", "Price");
+        objOrderTABLE.addValueOrder("Officer", "Desk", "Food", "Amount");
     }   // testerAddValue
 
     private void createOrConncet() {
         objUserTABLE = new UserTABLE(this);
         objFoodTABLE = new FoodTABLE(this);
+        objOrderTABLE = new OrderTABLE(this );
     }   // createOrConncet
 
 

@@ -22,6 +22,10 @@
             android:name=".OrderActivity"
             android:label="@string/title_activity_order" >
         </activity>
+        <activity
+            android:name=".ConfirmOrderListView"
+            android:label="@string/title_activity_confirm_order_list_view" >
+        </activity>
     </application>
 
 </manifest>
