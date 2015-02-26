@@ -5,7 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -14,6 +16,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.ArrayList;
 
 
 public class ConfirmOrderListView extends ActionBarActivity {
@@ -41,6 +53,8 @@ public class ConfirmOrderListView extends ActionBarActivity {
 
     }   // onCreate
 
+
+
     public void clickAddOrder(View view) {
 
         backToOrder();
@@ -56,7 +70,54 @@ public class ConfirmOrderListView extends ActionBarActivity {
 
     public void clickUploadOrder(View view) {
 
+        //Setup New Policy
+        if (Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy myPolicy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(myPolicy);
+        }
+
+        for (int i = 0; i < strListFood.length; i++) {
+
+            //Up Value to mySQL
+            upValueToMySQL(i);
+
+        }   // for
+
+        Toast.makeText(ConfirmOrderListView.this, "Finist Update to mySQL", Toast.LENGTH_SHORT).show();
+
+        clearAlldata();
+
+        backToOrder();
+
+    }   // clickUploadOrder
+
+    private void clearAlldata() {
+        SQLiteDatabase objSQLite = openOrCreateDatabase("restaurant.db", MODE_PRIVATE, null);
+        objSQLite.delete("orderTABLE", null, null);
     }
+
+    private void upValueToMySQL(int i) {
+
+        try {
+
+            ArrayList<NameValuePair> objNameValuePairs = new ArrayList<NameValuePair>();
+            objNameValuePairs.add(new BasicNameValuePair("isAdd", "true"));
+            objNameValuePairs.add(new BasicNameValuePair("Officer", strOfficer));
+            objNameValuePairs.add(new BasicNameValuePair("Desk", strDesk));
+            objNameValuePairs.add(new BasicNameValuePair("Food", strListFood[i]));
+            objNameValuePairs.add(new BasicNameValuePair("Amount", strListAmount[i]));
+
+            HttpClient objHttpClient = new DefaultHttpClient();
+            HttpPost objHttpPost = new HttpPost("http://swiftcodingthai.com/poy/add_order_poy.php");
+            objHttpPost.setEntity(new UrlEncodedFormEntity(objNameValuePairs, "UTF-8"));
+            objHttpClient.execute(objHttpPost);
+
+
+        } catch (Exception e) {
+            Log.d("Restaurant", "Cannot Up Value to MySQL ==> " + e.toString());
+        }
+
+    }   // upValue
 
     private void createListView() {
 
