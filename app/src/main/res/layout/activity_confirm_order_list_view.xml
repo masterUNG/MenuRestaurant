@@ -28,4 +28,41 @@
             android:textSize="20dp"
             android:layout_weight="1" />
     </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Add Order"
+            android:onClick="clickAddOrder"
+            android:id="@+id/button2"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Upload Order"
+            android:onClick="clickUploadOrder"
+            android:id="@+id/button3"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="350dp"
+        android:layout_below="@+id/linShowText">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listView2"
+            android:layout_below="@+id/linShowText" />
+    </LinearLayout>
+
 </RelativeLayout>

@@ -111,7 +111,7 @@ public class OrderActivity extends ActionBarActivity {
                         strAmount = "2";
                         break;
                     case 2:
-                        strAmount = "1";
+                        strAmount = "3";
                         break;
                     case 3:
                         strAmount = "4";

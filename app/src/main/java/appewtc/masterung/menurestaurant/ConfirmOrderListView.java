@@ -1,10 +1,18 @@
 package appewtc.masterung.menurestaurant;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
@@ -12,6 +20,10 @@ public class ConfirmOrderListView extends ActionBarActivity {
 
     private TextView txtShowOfficer, txtShowDesk;
     private String strOfficer, strDesk;
+    private ConfirmAdapter objConfirmAdapter;
+    private OrderTABLE objOrderTABLE;
+    private String[] strListFood, strListAmount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +36,92 @@ public class ConfirmOrderListView extends ActionBarActivity {
         //Setup TextView
         setupTextView();
 
+        //Create List View
+        createListView();
 
     }   // onCreate
+
+    public void clickAddOrder(View view) {
+
+        backToOrder();
+
+    }
+
+    private void backToOrder() {
+        Intent objIntent = new Intent(ConfirmOrderListView.this, OrderActivity.class);
+        objIntent.putExtra("Officer", strOfficer);
+        startActivity(objIntent);
+        finish();
+    }
+
+    public void clickUploadOrder(View view) {
+
+    }
+
+    private void createListView() {
+
+        objOrderTABLE = new OrderTABLE(this);
+        strListFood = objOrderTABLE.listFood();
+        strListAmount = objOrderTABLE.listAmount();
+
+        objConfirmAdapter = new ConfirmAdapter(ConfirmOrderListView.this, strListFood, strListAmount);
+        ListView confirmListView = (ListView) findViewById(R.id.listView2);
+        confirmListView.setAdapter(objConfirmAdapter);
+
+        //Set on Click
+        confirmListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                alertConfirm(position);
+            }
+        });
+
+
+    }   // createListView
+
+    private void alertConfirm(final int intPositionDelete) {
+
+        AlertDialog.Builder objBuilder = new AlertDialog.Builder(this);
+        objBuilder.setIcon(R.drawable.restaurant);
+        objBuilder.setTitle("What do you Want ?");
+        objBuilder.setMessage("You want to delete or edit ?");
+        objBuilder.setCancelable(false);
+        objBuilder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteOrder(intPositionDelete);
+                dialog.dismiss();
+            }
+        });
+        objBuilder.setNeutralButton("Edit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteOrder(intPositionDelete);
+                backToOrder();
+                dialog.dismiss();
+            }
+        });
+        objBuilder.setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        objBuilder.show();
+
+    }   // alertConfirm
+
+    private void deleteOrder(int intDelete) {
+
+        SQLiteDatabase objSqLiteDatabase = openOrCreateDatabase("restaurant.db", MODE_PRIVATE, null);
+        Cursor objCursor = objSqLiteDatabase.rawQuery("SELECT * FROM orderTABLE", null);
+        objSqLiteDatabase.delete("orderTABLE", "_id" + "=" + intDelete + 1, null);
+
+        Log.d("Restaurant", "id==>" + Integer.toString(intDelete));
+
+        createListView();
+
+    }   // deleteOrder
 
     private void setupTextView() {
         strOfficer = getIntent().getExtras().getString("Officer");

@@ -132,6 +132,7 @@ public class MainActivity extends ActionBarActivity {
                 objIntent.putExtra("Officer", strOfficer);
                 startActivity(objIntent);
                 dialog.dismiss();
+                finish();
             }
         });
         objAlert.show();
@@ -142,6 +143,7 @@ public class MainActivity extends ActionBarActivity {
         SQLiteDatabase objSQLite = openOrCreateDatabase("restaurant.db", MODE_PRIVATE, null);
         objSQLite.delete("userTABLE", null, null);
         objSQLite.delete("foodTABLE", null, null);
+        objSQLite.delete("orderTABLE", null, null);
     }   // deleteAllData
 
     private void synJSONtoSQLite() {
